@@ -73,7 +73,7 @@ namespace EducationManagementSOlution.Controllers
             }
             return message;
         }
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<ModelMessage> Delete(int id)
         {
             try

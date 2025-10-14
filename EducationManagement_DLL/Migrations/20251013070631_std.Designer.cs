@@ -4,6 +4,7 @@ using EducationManagement_DLL.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EducationManagement_DLL.Migrations
 {
     [DbContext(typeof(SchoolContext))]
-    partial class SchoolCOntextModelSnapshot : ModelSnapshot
+    [Migration("20251013070631_std")]
+    partial class std
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1499,6 +1502,13 @@ namespace EducationManagement_DLL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("ClassID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ClassInterval")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
@@ -1516,6 +1526,12 @@ namespace EducationManagement_DLL.Migrations
 
                     b.Property<string>("IP")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("InsBranchId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("InsId")
+                        .HasColumnType("int");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -1541,6 +1557,12 @@ namespace EducationManagement_DLL.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ClassID");
+
+                    b.HasIndex("InsBranchId");
+
+                    b.HasIndex("InsId");
 
                     b.ToTable("Grades");
                 });
@@ -4520,6 +4542,33 @@ namespace EducationManagement_DLL.Migrations
                         .HasForeignKey("InsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Institute");
+
+                    b.Navigation("InstituteBranch");
+                });
+
+            modelBuilder.Entity("EducationManagement_DLL.Models.Exam_Models.Grade", b =>
+                {
+                    b.HasOne("EducationManagement_DLL.Models.AcademyClass", "AcademyClass")
+                        .WithMany()
+                        .HasForeignKey("ClassID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EducationManagement_DLL.Models.InsBranch", "InstituteBranch")
+                        .WithMany()
+                        .HasForeignKey("InsBranchId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EducationManagement_DLL.Models.Institute", "Institute")
+                        .WithMany()
+                        .HasForeignKey("InsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AcademyClass");
 
                     b.Navigation("Institute");
 

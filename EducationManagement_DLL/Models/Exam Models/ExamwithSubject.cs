@@ -15,7 +15,7 @@ namespace EducationManagement_DLL.Models.Exam_Models
         [ForeignKey("SubjectInfo")]
         public int SubjectId { get; set; }
         [ForeignKey("ExamType")]
-            public int ExamTypeId { get; set; }
+         public int ExamTypeId { get; set; }
         public int FullMarks { get; set; }
         public int PassingMarks { get; set; }
         public int DurationInMinutes { get; set; }

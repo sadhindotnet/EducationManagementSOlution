@@ -54,10 +54,10 @@ namespace EducationManagement_DLL.Models
     }
     public class AcademicDepartment : BaseDTO
     {
-      //  public int ID { get; set; }
+        //public int ID { get; set; }
 
         [Display(Name = "Department")]
-        public int DepartmentName { get; set; }
+        public string DepartmentName { get; set; }
         //[ForeignKey("Module")]
         //public int ModuleId { get; set; }
         //public virtual Module Module { get; set; }
@@ -83,7 +83,7 @@ namespace EducationManagement_DLL.Models
     }
     public class Program1 : BaseDTO
     {
-        //public int Id { get; set; }
+        public int Id { get; set; }
         [ForeignKey("ProgramGroup")]
         public int ProgramGroupId { get; set; }
 
@@ -114,8 +114,8 @@ namespace EducationManagement_DLL.Models
         //public int Id { get; set; }
         [ForeignKey("Program")]
         public int PrgId { get; set; }
-         
-        
+
+        [Required]
         public string FullName { get; set; }
         public string ShortName { get; set; }
         public int DurationYear { get; set; } = 1;
