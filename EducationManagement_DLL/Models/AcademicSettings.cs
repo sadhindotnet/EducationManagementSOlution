@@ -17,7 +17,9 @@ namespace EducationManagement_DLL.Models
     {
         public int StudentId { get; set; }
         public DateTime Date { get; set; }
-        public bool IsPresent { get; set; }
+        
+        public DateTime Time { get; set; }
+        //public bool IsPresent { get; set; }
         [ValidateNever]
         public StudentBasicInfo Student { get; set; }
     }
