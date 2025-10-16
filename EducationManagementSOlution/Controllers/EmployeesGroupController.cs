@@ -3,51 +3,50 @@ using EducationManagement_DLL.Models;
 using EducationManagement_DLL.Utility;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using RoyalAPI.Models.AccountModels;
 
 namespace EducationManagementSOlution.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class DirectorsController : ControllerBase
+    public class EmployeesGroupController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
         private ModelMessage message;
-        public DirectorsController(IUnitOfWork unitOfWork)
+        public EmployeesGroupController(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
             message = new ModelMessage();
         }
         [HttpGet]
-        public async Task<IEnumerable<Directors>> Get()
+        public async Task<IEnumerable<EmployeesGroup>> Get()
         {
             try
             {
-                return await _unitOfWork.DirectorsRepo.GetAll();
+                return await _unitOfWork.EmployeesGroupRepo.GetAll();
             }
             catch (Exception ex)
             {
-                return Enumerable.Empty<Directors>();
+                return Enumerable.Empty<EmployeesGroup>();
             }
         }
         [HttpGet("{id:int}")]
-        public async Task<Directors> Get(int id)
+        public async Task<EmployeesGroup> Get(int id)
         {
             try
             {
-                return await _unitOfWork.DirectorsRepo.GetById(id);
+                return await _unitOfWork.EmployeesGroupRepo.GetById(id);
             }
             catch (Exception ex)
             {
-                return new Directors();
+                return new ();
             }
         }
         [HttpPost]
-        public async Task<ModelMessage> Post(Directors entity)
+        public async Task<ModelMessage> Post(EmployeesGroup entity)
         {
             try
             {
-                await _unitOfWork.DirectorsRepo.Add(entity);
+                await _unitOfWork.EmployeesGroupRepo.Add(entity);
                 message = _unitOfWork.Save();
 
             }
@@ -59,11 +58,11 @@ namespace EducationManagementSOlution.Controllers
             return message;
         }
         [HttpPut]
-        public async Task<ModelMessage> Put(Directors entity)
+        public async Task<ModelMessage> Put(EmployeesGroup entity)
         {
             try
             {
-                _unitOfWork.DirectorsRepo.Update(entity);
+                _unitOfWork.EmployeesGroupRepo.Update(entity);
                 message = _unitOfWork.Save();
 
             }
@@ -74,12 +73,12 @@ namespace EducationManagementSOlution.Controllers
             }
             return message;
         }
-        [HttpDelete ("{id}")]
+        [HttpDelete("{id}")]
         public async Task<ModelMessage> Delete(int id)
         {
             try
             {
-                await _unitOfWork.DirectorsRepo.DeletebyID(id);
+                await _unitOfWork.EmployeesGroupRepo.DeletebyID(id);
                 message = _unitOfWork.Save();
 
             }
@@ -90,5 +89,7 @@ namespace EducationManagementSOlution.Controllers
             }
             return message;
         }
+
     }
 }
+

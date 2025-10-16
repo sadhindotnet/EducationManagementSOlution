@@ -18,7 +18,7 @@ namespace EducationManagement_DLL.Models
        /// </summary>
 
         [Display(Name = "Department")]
-        public int DepartmentName { get; set; }
+        public string DepartmentName { get; set; }
         //[ForeignKey("Module")]
         //public int ModuleId { get; set; }
         //public virtual Module Module { get; set; }
@@ -64,7 +64,7 @@ namespace EducationManagement_DLL.Models
         public string PRESENTADDRESS { get; set; }
         public string PERMANENTADDRESS { get; set; }
         public string BirthRegistrationNo { get; set; }
-          public string Mobile { get; set; }
+        public string Mobile { get; set; }
         public string Nationality { get; set; }
         public Gender Gender { get; set; }
         public Religion Religion { get; set; }

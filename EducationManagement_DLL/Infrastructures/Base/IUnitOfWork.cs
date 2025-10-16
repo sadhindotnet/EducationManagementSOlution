@@ -85,6 +85,7 @@ namespace EducationManagement_DLL.Infrastructures.Base
         public IEmployeeExperience EmployeeExperienceRepo { get; }
         public IEmployeesEducation EmployeesEducationRepo { get; }
         public IEmployeesJobHistroy EmployeesJobHistroyRepo { get; }
+        
         public INationalCertificate NationalCertificateRepo { get; }
         public IInstituteType InstituteTyperepo { get; }
         public IInstitute InstituteRepo { get; }
