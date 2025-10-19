@@ -18,6 +18,8 @@ namespace EducationManagement_DLL.Infrastructures.Base
 {
     public interface IUnitOfWork:IDisposable
     {
+        public IUserRepo UserRepo { get; }
+
         public IConvertionRule ConvertionRuleRepo { get; }
        
         public IAcademyClass AcademyClassRepo { get; }

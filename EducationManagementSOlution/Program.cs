@@ -4,21 +4,27 @@ using System.Text.Json.Serialization;
 using System.Text.Json;
 using EducationManagement_DLL.Context;
 using Microsoft.EntityFrameworkCore;
+using EducationManagement_DLL.Models.IdentityModels;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
-builder.Services.AddDbContext<SchoolContext>();
-builder.Services.AddScoped<IUnitOfWork, UnitOFWork>();
+ 
+
 builder.Services.AddDbContext<SchoolContext>(op => {
     op.UseSqlServer(builder.Configuration
         .GetConnectionString("DefaultConnection")
      );
     op.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 });
+builder.Services.AddIdentity<ApplicationUser, Role>()
+    .AddEntityFrameworkStores<SchoolContext>()
+    .AddDefaultTokenProviders();
 
+builder.Services.AddScoped<IUnitOfWork, UnitOFWork>();
 builder.Services.AddControllers(options =>
 {
     options.OutputFormatters.RemoveType<SystemTextJsonOutputFormatter>();
@@ -42,6 +48,9 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod();
     });
 });
+
+
+
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {

@@ -23,33 +23,32 @@ namespace EducationManagementSOlution.Controllers
       {
          try
          {
-            return await _unitOfWork.RoleRepo.GetAll();
+            return await _unitOfWork.RoleRepo.GetRoles();
          }
          catch (Exception ex)
          {
             return Enumerable.Empty<Role>();
          }
       }
-      [HttpGet("{id:int}")]
-      public async Task<Role> Get(int id)
-      {
-         try
-         {
-            return await _unitOfWork.RoleRepo.GetById(id);
-         }
-         catch (Exception ex)
-         {
-            return new Role();
-         }
-      }
+      //[HttpGet("{id:int}")]
+      //public async Task<Role> Get(int id)
+      //{
+      //   try
+      //   {
+      //      return await _unitOfWork.RoleRepo.GetById(id);
+      //   }
+      //   catch (Exception ex)
+      //   {
+      //      return new Role();
+      //   }
+      //}
       [HttpPost]
-      public async Task<ModelMessage> Post(Role entity)
+      public async Task<ModelMessage> Post()
       {
          try
          {
-            await _unitOfWork.RoleRepo.Add(entity);
-            message = _unitOfWork.Save();
-
+          message=   await _unitOfWork.RoleRepo.Post();
+           
          }
          catch (Exception ex)
          {
@@ -58,37 +57,39 @@ namespace EducationManagementSOlution.Controllers
          }
          return message;
       }
-      [HttpPut]
-      public async Task<ModelMessage> Put(Role entity)
-      {
-         try
-         {
-            _unitOfWork.RoleRepo.Update(entity);
-            message = _unitOfWork.Save();
+      //[HttpPut]
+      //public async Task<ModelMessage> Put(Role entity)
+      //{
+      //   try
+      //   {
+      //      _unitOfWork.RoleRepo.Update(entity);
+      //      message = _unitOfWork.Save();
 
-         }
-         catch (Exception ex)
-         {
-            message.IsSuccess = false;
-            message.Message = ex.Message;
-         }
-         return message;
-      }
-      [HttpDelete]
-      public async Task<ModelMessage> Delete(int id)
-      {
-         try
-         {
-            await _unitOfWork.RoleRepo.DeletebyID(id);
-            message = _unitOfWork.Save();
+      //   }
+      //   catch (Exception ex)
+      //   {
+      //      message.IsSuccess = false;
+      //      message.Message = ex.Message;
+      //   }
+      //   return message;
+      //}
+      //[HttpDelete]
+      //public async Task<ModelMessage> Delete(int id)
+      //{
+      //   try
+      //   {
+      //      await _unitOfWork.RoleRepo.DeletebyID(id);
+      //      message = _unitOfWork.Save();
 
-         }
-         catch (Exception ex)
-         {
-            message.IsSuccess = false;
-            message.Message = ex.Message;
-         }
-         return message;
-      }
-   }
+      //   }
+      //   catch (Exception ex)
+      //   {
+      //      message.IsSuccess = false;
+      //      message.Message = ex.Message;
+      //   }
+      //   return message;
+      //}
+  
+    
+    }
 }

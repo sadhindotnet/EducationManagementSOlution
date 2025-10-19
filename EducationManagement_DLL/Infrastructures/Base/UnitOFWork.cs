@@ -3,8 +3,10 @@
 using EducationManagement_DLL.Context;
 using EducationManagement_DLL.Infrastructures.Repositories;
 using EducationManagement_DLL.Models;
+using EducationManagement_DLL.Models.IdentityModels;
 using EducationManagement_DLL.Models.WebsiteModels;
 using EducationManagement_DLL.Utility;
+using Microsoft.AspNetCore.Identity;
 using RoyalAPI.Models.AccountModels;
 
 namespace EducationManagement_DLL.Infrastructures.Base
@@ -12,14 +14,34 @@ namespace EducationManagement_DLL.Infrastructures.Base
     public class UnitOFWork : IUnitOfWork
     {
         public SchoolContext context;
-        public UnitOFWork(SchoolContext context)
+        private readonly IServiceProvider _serviceProvider;
+
+        private readonly RoleManager<Role> _roleManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        SignInManager<ApplicationUser> _signInManager;
+        public UnitOFWork(SchoolContext context,  IServiceProvider serviceProvider)
         {
             this.context = context;
+            _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+
+            //_userManager = userManager;
+            //_signInManager = signInManager;
+             
+        }
+        private IUserRepo userRepo;
+        public IUserRepo UserRepo
+        {
+            get
+            {
+                if (userRepo == null)
+                {
+                    userRepo = new UserRepo(context, _serviceProvider);
+                }
+                return userRepo;
+            }
         }
 
-
         private IAcademyClass academyClass;
-
         public IAcademyClass AcademyClassRepo
         {
             get
@@ -291,7 +313,7 @@ namespace EducationManagement_DLL.Infrastructures.Base
             {
                 if (role == null)
                 {
-                    role = new RoleRepo(context);
+                    role = new RoleRepo(_serviceProvider);
                 }
                 return role;
             }
