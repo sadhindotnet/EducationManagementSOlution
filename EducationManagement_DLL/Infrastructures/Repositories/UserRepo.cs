@@ -84,8 +84,8 @@ namespace EducationManagement_DLL.Infrastructures.Repositories
                         UserName = model.Email,
                         Email = model.Email,
                         SecurityStamp = Guid.NewGuid().ToString(),
-                        InstituteID = 5,
-                        BranchID=3
+                        InstituteID =1,
+                        BranchID=1
                     };
                             var result = await _userManager.CreateAsync(user, model.Password);
 
@@ -140,50 +140,50 @@ namespace EducationManagement_DLL.Infrastructures.Repositories
        
         }
 
-        public async Task<string> Login( LoginDTO login)
-        {
-            string message = "";
-            if (login == null)
-            {
-                message = "Invalid login request" );
-            }
-            try
-            {
-                // Decode the password hash if it exists
-                if (!string.IsNullOrEmpty(login.Hash))
-                {
-                    login.Password = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(login.Hash));
-                }
+        //public async Task<string> Login( LoginDTO login)
+        //{
+        //    string message = "";
+        //    if (login == null)
+        //    {
+        //        message = "Invalid login request";
+        //    }
+        //    try
+        //    {
+        //        // Decode the password hash if it exists
+        //        if (!string.IsNullOrEmpty(login.Hash))
+        //        {
+        //            login.Password = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(login.Hash));
+        //        }
 
-                // Check if the user exists
-                var existUser = await _userManager.FindByNameAsync(login.UserName);
-                if (existUser is null)
-                {
-                    message = "Invalid user name";
-                }
+        //        // Check if the user exists
+        //        var existUser = await _userManager.FindByNameAsync(login.UserName);
+        //        if (existUser is null)
+        //        {
+        //            message = "Invalid user name";
+        //        }
 
-                // Get user roles
-                var roles = await _userManager.GetRolesAsync(existUser);
-                var role = roles.FirstOrDefault();
-                if (role == null)
-                {
-                    message = "User does not have a role assigned";
-                }
+        //        // Get user roles
+        //        var roles = await _userManager.GetRolesAsync(existUser);
+        //        var role = roles.FirstOrDefault();
+        //        if (role == null)
+        //        {
+        //            message = "User does not have a role assigned";
+        //        }
 
-                // Validate the password
-                var isValidPassword = await _userManager.CheckPasswordAsync(existUser, login.Password);
-                if (!isValidPassword)
-                {
-                    message = "Invalid  password";
-                }
+        //        // Validate the password
+        //        var isValidPassword = await _userManager.CheckPasswordAsync(existUser, login.Password);
+        //        if (!isValidPassword)
+        //        {
+        //            message = "Invalid  password";
+        //        }
 
-                // Generate claims for the token
-            }
-            catch(Exception ex)
-            {
-                message =ex.InnerException?.Message??ex.Message;
-            }
-        }
+        //        // Generate claims for the token
+        //    }
+        //    catch(Exception ex)
+        //    {
+        //        message =ex.InnerException?.Message??ex.Message;
+        //    }
+        //}
 
     }
 }
