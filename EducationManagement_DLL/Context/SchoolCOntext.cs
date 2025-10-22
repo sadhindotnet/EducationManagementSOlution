@@ -1,6 +1,7 @@
 ﻿using EducationManagement_DLL.Models;
 using EducationManagement_DLL.Models.AccountsModel;
 using EducationManagement_DLL.Models.Exam_Models;
+using EducationManagement_DLL.Models.IdentityModels;
 using EducationManagement_DLL.Models.WebsiteModels;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -25,7 +26,7 @@ namespace EducationManagement_DLL.Context
             return new SchoolContext(optionsBuilder.Options);
         }//User id=sa;password=123;
     }
-    public class SchoolContext:IdentityDbContext<ApplicationUser>
+    public class SchoolContext:IdentityDbContext<ApplicationUser,Role,string>
     {
         
         public SchoolContext(DbContextOptions<SchoolContext> options) : base(options)

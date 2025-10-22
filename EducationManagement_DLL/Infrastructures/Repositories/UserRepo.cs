@@ -3,6 +3,7 @@ using EducationManagement_DLL.DTOs;
 using EducationManagement_DLL.Infrastructures.Base;
 using EducationManagement_DLL.Models.IdentityModels;
 using EducationManagement_DLL.Models.WebsiteModels;
+using EducationManagement_DLL.Security;
 using EducationManagement_DLL.Utility;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -12,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -61,11 +63,11 @@ namespace EducationManagement_DLL.Infrastructures.Repositories
        ?? throw new InvalidOperationException("UserManager could not be resolved.");
             return _userManager.Users.AsEnumerable();
         }
+        //Register user 
         public async Task<ModelMessage>  CreateUser([FromBody] RegisterDTO model)
         {
             using (var transaction = _context.Database.BeginTransaction())
-            {
-                
+            { 
                 try
                 {
                     _userManager = _serviceProvider?.GetRequiredService<UserManager<ApplicationUser>>()
@@ -106,8 +108,8 @@ namespace EducationManagement_DLL.Infrastructures.Repositories
                                 //_mailService.SendMail(emailData);
 
                                 transaction.Commit();
-
-                        modelMessage.Message = "User created successfully! Please check your email to confirm your account.";
+                        modelMessage.IsSuccess = true;
+                        modelMessage.Message = "User created successfully!";
                         
                             }
                             else
@@ -138,6 +140,50 @@ namespace EducationManagement_DLL.Infrastructures.Repositories
        
         }
 
-      
+        public async Task<string> Login( LoginDTO login)
+        {
+            string message = "";
+            if (login == null)
+            {
+                message = "Invalid login request" );
+            }
+            try
+            {
+                // Decode the password hash if it exists
+                if (!string.IsNullOrEmpty(login.Hash))
+                {
+                    login.Password = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(login.Hash));
+                }
+
+                // Check if the user exists
+                var existUser = await _userManager.FindByNameAsync(login.UserName);
+                if (existUser is null)
+                {
+                    message = "Invalid user name";
+                }
+
+                // Get user roles
+                var roles = await _userManager.GetRolesAsync(existUser);
+                var role = roles.FirstOrDefault();
+                if (role == null)
+                {
+                    message = "User does not have a role assigned";
+                }
+
+                // Validate the password
+                var isValidPassword = await _userManager.CheckPasswordAsync(existUser, login.Password);
+                if (!isValidPassword)
+                {
+                    message = "Invalid  password";
+                }
+
+                // Generate claims for the token
+            }
+            catch(Exception ex)
+            {
+                message =ex.InnerException?.Message??ex.Message;
+            }
+        }
+
     }
 }

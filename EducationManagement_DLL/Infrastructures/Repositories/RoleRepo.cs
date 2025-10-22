@@ -125,6 +125,7 @@ namespace EducationManagement_DLL.Infrastructures.Repositories
                 }
                 if (roleResult.Succeeded)
                 {
+                    modelMessage.IsSuccess = true;
                     modelMessage.Message = "Roles created successfully";
                 }
                 else if (roleResult.Errors.Count() > 0)

@@ -11,18 +11,18 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddSwaggerGen();
-builder.Services.AddControllers();
- 
+//builder.Services.AddControllers();
 
+builder.Services.AddIdentity<ApplicationUser, Role>()
+    .AddEntityFrameworkStores<SchoolContext>()
+    .AddDefaultTokenProviders();
 builder.Services.AddDbContext<SchoolContext>(op => {
     op.UseSqlServer(builder.Configuration
         .GetConnectionString("DefaultConnection")
      );
     op.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 });
-builder.Services.AddIdentity<ApplicationUser, Role>()
-    .AddEntityFrameworkStores<SchoolContext>()
-    .AddDefaultTokenProviders();
+
 
 builder.Services.AddScoped<IUnitOfWork, UnitOFWork>();
 builder.Services.AddControllers(options =>
