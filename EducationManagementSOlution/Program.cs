@@ -6,6 +6,7 @@ using EducationManagement_DLL.Context;
 using Microsoft.EntityFrameworkCore;
 using EducationManagement_DLL.Models.IdentityModels;
 using Microsoft.AspNetCore.Identity;
+using EducationManagementSOlution.Security;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +26,9 @@ builder.Services.AddDbContext<SchoolContext>(op => {
 
 
 builder.Services.AddScoped<IUnitOfWork, UnitOFWork>();
+
+
+builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddControllers(options =>
 {
     options.OutputFormatters.RemoveType<SystemTextJsonOutputFormatter>();

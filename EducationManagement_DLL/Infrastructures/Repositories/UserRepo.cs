@@ -1,14 +1,16 @@
 ﻿using EducationManagement_DLL.Context;
 using EducationManagement_DLL.DTOs;
 using EducationManagement_DLL.Infrastructures.Base;
+using EducationManagement_DLL.Migrations;
 using EducationManagement_DLL.Models.IdentityModels;
 using EducationManagement_DLL.Models.WebsiteModels;
-using EducationManagement_DLL.Security;
+
 using EducationManagement_DLL.Utility;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -23,6 +25,7 @@ namespace EducationManagement_DLL.Infrastructures.Repositories
     {
       Task<ModelMessage> CreateUser(  RegisterDTO model);
         Task<IEnumerable<ApplicationUser>> GetUsers();
+        public  Task<Object> Login(LoginDTO login);
     }
     public  class UserRepo : IUserRepo
     {
@@ -85,7 +88,7 @@ namespace EducationManagement_DLL.Infrastructures.Repositories
                         Email = model.Email,
                         SecurityStamp = Guid.NewGuid().ToString(),
                         InstituteID = 5,
-                        BranchID=3
+                        BranchID = 3
                     };
                             var result = await _userManager.CreateAsync(user, model.Password);
 
@@ -93,9 +96,9 @@ namespace EducationManagement_DLL.Infrastructures.Repositories
                             {
                                 var roleResult = await _userManager.AddToRoleAsync(user, model.RolesName);
 
-                                var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                                var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
-                                var pass = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(model.Password));
+                                //var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                                //var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+                                //var pass = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(model.Password));
                                 //var confirmationLink = Url.Action("ConfirmEmail", "Authenticate", new { userId = user.Id, token = encodedToken }, Request.Scheme);
                                 //var confirmationLink = $"{model.Url}?userId={user.Id}&token={encodedToken}&roll={pass})";
                                 //var emailData = new MailData
@@ -140,48 +143,57 @@ namespace EducationManagement_DLL.Infrastructures.Repositories
        
         }
 
-        public async Task<string> Login( LoginDTO login)
+        public async Task<Object> Login( LoginDTO login)
         {
             string message = "";
             if (login == null)
             {
-                message = "Invalid login request" );
+                message = "Invalid login request" ;
             }
             try
             {
-                // Decode the password hash if it exists
-                if (!string.IsNullOrEmpty(login.Hash))
-                {
-                    login.Password = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(login.Hash));
-                }
-
+                _userManager = _serviceProvider?.GetRequiredService<UserManager<ApplicationUser>>()
+       ?? throw new InvalidOperationException("UserManager could not be resolved.");
                 // Check if the user exists
                 var existUser = await _userManager.FindByNameAsync(login.UserName);
                 if (existUser is null)
                 {
                     message = "Invalid user name";
+                    return new { Message = message };
                 }
-
-                // Get user roles
-                var roles = await _userManager.GetRolesAsync(existUser);
-                var role = roles.FirstOrDefault();
-                if (role == null)
-                {
-                    message = "User does not have a role assigned";
-                }
-
                 // Validate the password
                 var isValidPassword = await _userManager.CheckPasswordAsync(existUser, login.Password);
                 if (!isValidPassword)
                 {
                     message = "Invalid  password";
+                    return new { Message = message };
                 }
 
-                // Generate claims for the token
+                var loggedUser = (from u in _context.Users.Include(u => u.Institute).Include(u => u.InstituteBranch)
+                                  where u.UserName == login.UserName
+                                  select new LoggedUserDTO
+                                  {
+                                      UserId = u.Id,
+                                      UserName = u.UserName,
+                                      Email = u.Email,
+                                      PictureUrl = u.ProfilePicture,
+                                      InstituteId = u.InstituteID.Value,
+                                      InstituteBranchId = u.BranchID,
+                                      InstituteName = u.Institute.InstituteName,
+                                      InstituteBranchName = u.InstituteBranch.BranchName,
+                                      Role =string.Join(",", (from ur in _context.UserRoles
+                                              join r in _context.Roles on ur.RoleId equals r.Id
+                                              where ur.UserId == u.Id
+                                              select r.Name))
+                                  }).FirstOrDefault();
+
+                return loggedUser;
+
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 message =ex.InnerException?.Message??ex.Message;
+               return    new { Message = message };
             }
         }
 

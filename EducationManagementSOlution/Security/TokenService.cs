@@ -9,7 +9,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EducationManagement_DLL.Security
+namespace EducationManagementSOlution.Security
 {
     public interface ITokenService
     {
