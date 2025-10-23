@@ -40,6 +40,10 @@ namespace EducationManagement_DLL.Context
             base.OnModelCreating(modelBuilder);
             // Additional model configurations can go here
         }
+        #region security
+
+        public virtual DbSet<LoginModel> LoginModels { get; set; } = null!;
+        #endregion
         public DbSet<Institute> Institutes { get; set; } = null!;
         public DbSet<InstituteType> InstituteTypes { get; set; } = null!;
         public DbSet<InsBranch> InsBranches { get; set; } = null!;
