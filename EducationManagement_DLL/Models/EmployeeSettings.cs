@@ -67,10 +67,11 @@ namespace EducationManagement_DLL.Models
         public string Mobile { get; set; }
         public string Nationality { get; set; }
         public Gender Gender { get; set; }
+        [ValidateNever]
         public Religion Religion { get; set; }
         [ForeignKey("Designation")]
         public int DesignationID { get; set; }
-
+        [ValidateNever]
         public Designation Designation { get; set; }
         [NotMapped]
         public int GroupID { get; set; }
