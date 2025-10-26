@@ -1011,16 +1011,10 @@ namespace EducationManagement_DLL.Infrastructures.Base
             }
             catch (Exception ex)
             {
-                if (ex.InnerException != null)
-                {
-                    modelMessage.Message = ex.InnerException.Message;
-                    modelMessage.IsSuccess = false;
-                }
-                else
-                {
-                    modelMessage.Message = ex.Message;
-                    modelMessage.IsSuccess = false;
-                }
+
+                modelMessage.Message = ex.InnerException?.Message??ex.Message;
+                modelMessage.IsSuccess = false;
+               
             }
             return modelMessage;
         }
