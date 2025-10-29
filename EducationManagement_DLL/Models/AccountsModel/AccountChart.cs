@@ -14,7 +14,7 @@ namespace RoyalAPI.Models.AccountModels
         public string? AccountCode { get; set; }
         [Required]
         public string AccountName { get; set; } = string.Empty;
-        public int AccountTypeID { get; set; }
+        public int AccountTypeID { get; set; } = 1;
         public decimal? OpeningBalance { get; set; }
         //public DateTime? CreatedDate { get; set; }
         //public string? CreatedBy { get; set; }

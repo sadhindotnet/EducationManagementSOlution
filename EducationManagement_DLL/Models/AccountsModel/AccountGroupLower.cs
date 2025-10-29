@@ -14,7 +14,7 @@ namespace RoyalAPI.Models.AccountModels
         public string? LowerGroupCode { get; set; }
         [Required]
         public string LowerGroupName { get; set; } = string.Empty;
-        public int AccountTypeID { get; set; }
+        public int AccountTypeID { get; set; } = 1;
         [ForeignKey("Institute")]
         public int InsId { get; set; }
         [ForeignKey("InstituteBranch")]

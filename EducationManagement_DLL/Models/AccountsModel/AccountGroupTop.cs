@@ -10,8 +10,8 @@ namespace EducationManagement_DLL.Models.AccountsModel
         //public int TopGroupID { get; set; }
         public string? TopGroupCode { get; set; }
         [Required]
-        public string TopGroupName { get; set; } = string.Empty;    
-        public int AccountTypeID { get; set; }
+        public string TopGroupName { get; set; } = string.Empty;
+        public int AccountTypeID { get; set; } = 1;
         [ForeignKey("Institute")]
         public int InsId { get; set; }
         [ForeignKey("InstituteBranch")]

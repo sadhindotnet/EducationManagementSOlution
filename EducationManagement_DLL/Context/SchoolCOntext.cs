@@ -114,6 +114,7 @@ namespace EducationManagement_DLL.Context
        public DbSet<Result> Results { get; set; } = null!;
         public DbSet<ExamAttendance> ExamAttendances { get; set; } = null!;
 
+        public DbSet<ExamRoutine> ExamRoutines { get; set; } = null!;
 
         #endregion
 
