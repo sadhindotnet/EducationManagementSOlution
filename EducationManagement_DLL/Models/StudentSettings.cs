@@ -56,7 +56,7 @@ namespace EducationManagement_DLL.Models
         public string StudentPermanentAdress { get; set; }
         [ValidateNever]
         public string? StudentNationality { get; set; }
-        
+        [ForeignKey("Religion")]
         public int? ReligionId { get; set; }
         [ValidateNever]
         public string? StudentBloodGroup { get; set; }
@@ -78,9 +78,13 @@ namespace EducationManagement_DLL.Models
         public int StudentStatus { get; set; } = 1;
         public string GenerateStdID(int sid, string year, string insName)
         {
-            string std = $"{insName}-{year.Substring(2, 2)}{sid}";
+            //string std = $"{insName}-{year.Substring(2, 2)}{sid}";
+            string std = $"{insName}-{year.Substring(2, 2)}{sid.ToString().PadLeft(4, '0')}";
+
             return std;
         }
+
+        
         [ValidateNever]
         public Religion Religion { get; set; }
         [ForeignKey("Institute")]
@@ -91,6 +95,8 @@ namespace EducationManagement_DLL.Models
         //public int? ModuleId { get; set; }
         //[ValidateNever]
         //public virtual Module Module { get; set; }
+        [NotMapped]
+        public string? InstituteName { get; set; }
         [ValidateNever]
         public virtual Institute Institute { get; set; }
         [ValidateNever]
@@ -148,4 +154,9 @@ namespace EducationManagement_DLL.Models
 
     }
  
+
+  
+
+
+
 }

@@ -2,6 +2,7 @@
 
 
 
+using EducationManagement_DLL.Context;
 using EducationManagement_DLL.Infrastructures.Repositories;
 using EducationManagement_DLL.Models.AccountsModel;
 using EducationManagement_DLL.Models.WebsiteModels;
@@ -18,6 +19,7 @@ namespace EducationManagement_DLL.Infrastructures.Base
 {
     public interface IUnitOfWork:IDisposable
     {
+        public SchoolContext Context { get;  }
         public IUserRepo UserRepo { get; }
 
         public IConvertionRule ConvertionRuleRepo { get; }

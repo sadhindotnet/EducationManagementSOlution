@@ -9,11 +9,21 @@ using System.Threading.Tasks;
 
 namespace EducationManagement_DLL.Infrastructures.Repositories
 {
-    public interface IStudentBasicInfo : IGenericRepository<StudentBasicInfo> { }
+    public interface IStudentBasicInfo : IGenericRepository<StudentBasicInfo> {
+        public bool isExist(string name, string fatherContact);
+    }
 
 
     public class StudentBasicInfoRepo : GenericRepository<StudentBasicInfo>, IStudentBasicInfo
     {
-        public StudentBasicInfoRepo(SchoolContext context) : base(context) { }
+        SchoolContext _context;
+        public StudentBasicInfoRepo(SchoolContext context) : base(context) {
+            this._context = context;
+        }
+        public bool isExist(string name, string fatherContact)
+        {
+            return
+                   _context.StudentBasicInfos.Any(s => s.StudentName.ToLower().Equals(name) && s.StudentFathersContract.Equals(fatherContact));
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using EducationManagement_DLL.Infrastructures.Base;
+﻿using EducationManagement_DLL.DTOs;
+using EducationManagement_DLL.Infrastructures.Base;
 using EducationManagement_DLL.Models;
 using EducationManagement_DLL.Models.WebsiteModels;
 using EducationManagement_DLL.Utility;
@@ -17,6 +18,7 @@ namespace EducationManagementSOlution.Controllers
         {
             _unitOfWork = unitOfWork;
             message = new ModelMessage();
+            
         }
         [HttpGet]
         public async Task<IEnumerable<StudentBasicInfo>> Get()
@@ -43,18 +45,52 @@ namespace EducationManagementSOlution.Controllers
             }
         }
         [HttpPost]
-        public async Task<ModelMessage> Post(StudentBasicInfo entity)
+        public async Task<ModelMessage> Post ([FromBody] StudentBasicInfo entity)
         {
+          using(var transaction= _unitOfWork.Context.Database.BeginTransaction())
+            {
             try
             {
+                    if(_unitOfWork.StudentBasicInfoRepo.isExist(entity.StudentName, entity.StudentFathersContract))
+                    {
+                        message.IsSuccess = false;
+                        message.Message = "Student name exist";
+                        return message;
+                    }
                 await _unitOfWork.StudentBasicInfoRepo.Add(entity);
                 message = _unitOfWork.Save();
+                if(message.IsSuccess)
+                {
+                    var update= await _unitOfWork.StudentBasicInfoRepo.GetById(entity.Id);
+                    update.StudentID = entity.GenerateStdID(entity.Id, DateTime.Now.Year.ToString(), entity.InstituteName);
+                    _unitOfWork.StudentBasicInfoRepo.Update(update);
+                    message = _unitOfWork.Save();
+                        var register = new RegisterDTO
+                        {
+                            Email = entity.StudentEmail,
+                            UserName = entity.StudentID,
+                            Password = entity.StudentName.Substring(0, 3) + "*566#",
+                            RolesName = "Student",
+                            Name = entity.StudentName,
+                            InstituteBranchId = entity.BranchId.Value,
+                            InstituteId = entity.InstituteID.Value,
+                            PhoneNumber = entity.StudentContract ?? entity.StudentFathersContract
+                        };
 
-            }
+                 message= await   _unitOfWork.UserRepo.CreateUser(register);
+                  transaction.Commit();
+                        return message;
+                    }
+                 transaction.Rollback();
+                    return message;
+                }
             catch (Exception ex)
             {
                 message.IsSuccess = false;
                 message.Message = ex.Message;
+                transaction.Rollback();
+                    return message;
+                }
             }
             return message;
         }

@@ -69,12 +69,12 @@ namespace EducationManagement_DLL.Infrastructures.Repositories
         //Register user 
         public async Task<ModelMessage>  CreateUser([FromBody] RegisterDTO model)
         {
-            using (var transaction = _context.Database.BeginTransaction())
-            { 
+            //using (var transaction = _context.Database.BeginTransaction())
+            //{ 
                 try
                 {
                     _userManager = _serviceProvider?.GetRequiredService<UserManager<ApplicationUser>>()
-    ?? throw new InvalidOperationException("UserManager could not be resolved.");
+                         ?? throw new InvalidOperationException("UserManager could not be resolved.");
 
                     var isExist = await _userManager.FindByEmailAsync(model.Email);
                     if (isExist != null)
@@ -84,11 +84,13 @@ namespace EducationManagement_DLL.Infrastructures.Repositories
 
                     var user = new ApplicationUser
                     {
-                        UserName = model.Email,
+                        UserName = model.UserName,
+                        FirstName=model.Name,
                         Email = model.Email,
                         SecurityStamp = Guid.NewGuid().ToString(),
-                        InstituteID = 5,
-                        BranchID = 3
+                        InstituteID = model.InstituteId,
+                        BranchID = model.InstituteBranchId,
+                        PhoneNumber=model.PhoneNumber
                     };
                             var result = await _userManager.CreateAsync(user, model.Password);
 
@@ -110,7 +112,7 @@ namespace EducationManagement_DLL.Infrastructures.Repositories
                                 //};
                                 //_mailService.SendMail(emailData);
 
-                                transaction.Commit();
+                             //   transaction.Commit();
                         modelMessage.IsSuccess = true;
                         modelMessage.Message = "User created successfully!";
                         
@@ -125,22 +127,17 @@ namespace EducationManagement_DLL.Infrastructures.Repositories
                                 modelMessage.Message = $"User creation failed for {er.Description}! ";
                             }
                         }
-                                transaction.Rollback();
+                               // transaction.Rollback();
                         //return HandleUserErrors(result);
-                      
                     }
-                        
-                   
                 }
                 catch (Exception ex)
                 {
-                    transaction.Rollback();
+                   // transaction.Rollback();
                     modelMessage.Message = ex.InnerException?.Message ?? ex.Message;
                 }
                 return modelMessage;
-            }
-     
-       
+            //}
         }
 
         public async Task<Object> Login( LoginDTO login)

@@ -8,6 +8,7 @@ using EducationManagement_DLL.Models.WebsiteModels;
 using EducationManagement_DLL.Utility;
 using Microsoft.AspNetCore.Identity;
 using RoyalAPI.Models.AccountModels;
+using System.Net.Http.Headers;
 
 namespace EducationManagement_DLL.Infrastructures.Base
 {
@@ -972,12 +973,7 @@ namespace EducationManagement_DLL.Infrastructures.Base
             }
         }
 
-
-
-
-
-
-
+        public SchoolContext Context { get => context; }
 
         public void Dispose()
         {

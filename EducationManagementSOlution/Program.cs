@@ -31,7 +31,9 @@ builder.Services.AddScoped<IUnitOfWork, UnitOFWork>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddControllers(options =>
 {
-    options.OutputFormatters.RemoveType<SystemTextJsonOutputFormatter>();
+   
+
+options.OutputFormatters.RemoveType<SystemTextJsonOutputFormatter>();
     options.OutputFormatters.Add(new SystemTextJsonOutputFormatter
             (new JsonSerializerOptions(JsonSerializerDefaults.Web)
             {
@@ -42,7 +44,11 @@ builder.Services.AddControllers(options =>
                 WriteIndented = true,
                 TypeInfoResolver = JsonSerializerOptions.Default.TypeInfoResolver,
             }));
+}).AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
+;
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>

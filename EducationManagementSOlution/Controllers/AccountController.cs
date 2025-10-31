@@ -22,7 +22,7 @@ namespace EducationManagementSOlution.Controllers
         private readonly IUnitOfWork unitOfWork;
         private readonly ITokenService _tokenmanager;
         
-        private SchoolContext _context;
+       // private SchoolContext _context;
        
         //private readonly IMailService _mailService;
 
@@ -30,8 +30,8 @@ namespace EducationManagementSOlution.Controllers
                                 UserManager<ApplicationUser> userManager,
                                      
                                          IUnitOfWork work ,
-                                      ITokenService tokenmanager,
-                                       SchoolContext _context
+                                      ITokenService tokenmanager
+                                      // SchoolContext _context
                                       //IMailService mailService
                                       )
         {
@@ -40,7 +40,7 @@ namespace EducationManagementSOlution.Controllers
             this.unitOfWork = work;
            
             _tokenmanager = tokenmanager;
-            this._context = _context;
+          //  this._context = _context;
             //_mailService = mailService;
 
         }//constructor
@@ -58,7 +58,7 @@ namespace EducationManagementSOlution.Controllers
 
             }
 
-            using (var transaction = this._context.Database.BeginTransaction())
+            using (var transaction = this.unitOfWork.Context.Database.BeginTransaction())
             {
                 try
             {
