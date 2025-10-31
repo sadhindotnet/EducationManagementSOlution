@@ -4,6 +4,7 @@ using EducationManagement_DLL.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EducationManagement_DLL.Migrations
 {
     [DbContext(typeof(SchoolContext))]
-    partial class SchoolCOntextModelSnapshot : ModelSnapshot
+    [Migration("20251027065004_u2")]
+    partial class u2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1394,82 +1397,6 @@ namespace EducationManagement_DLL.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ExamAttendances");
-                });
-
-            modelBuilder.Entity("EducationManagement_DLL.Models.Exam_Models.ExamRoutine", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AcademyClassId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DayOfWeek")
-                        .IsRequired()
-                        .HasMaxLength(12)
-                        .HasColumnType("nvarchar(12)");
-
-                    b.Property<string>("DomainName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<TimeSpan>("EndTime")
-                        .HasColumnType("time");
-
-                    b.Property<DateTime>("ExamDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("ExamId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("IP")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("InsBranchId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("InsId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("SessionID")
-                        .HasColumnType("int");
-
-                    b.Property<TimeSpan>("StartTime")
-                        .HasColumnType("time");
-
-                    b.Property<int>("SubjectId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AcademyClassId");
-
-                    b.HasIndex("ExamId");
-
-                    b.HasIndex("InsBranchId");
-
-                    b.HasIndex("InsId");
-
-                    b.HasIndex("SubjectId");
-
-                    b.ToTable("ExamRoutines");
                 });
 
             modelBuilder.Entity("EducationManagement_DLL.Models.Exam_Models.ExamTitle", b =>
@@ -4611,49 +4538,6 @@ namespace EducationManagement_DLL.Migrations
                     b.Navigation("Employee");
 
                     b.Navigation("NationalCertificate");
-                });
-
-            modelBuilder.Entity("EducationManagement_DLL.Models.Exam_Models.ExamRoutine", b =>
-                {
-                    b.HasOne("EducationManagement_DLL.Models.AcademyClass", "AcademyClass")
-                        .WithMany()
-                        .HasForeignKey("AcademyClassId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("EducationManagement_DLL.Models.Exam_Models.ExamTitle", "Exam")
-                        .WithMany()
-                        .HasForeignKey("ExamId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("EducationManagement_DLL.Models.InsBranch", "InstituteBranch")
-                        .WithMany()
-                        .HasForeignKey("InsBranchId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("EducationManagement_DLL.Models.Institute", "Institute")
-                        .WithMany()
-                        .HasForeignKey("InsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("EducationManagement_DLL.Models.SubjectInfo", "Subject")
-                        .WithMany()
-                        .HasForeignKey("SubjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AcademyClass");
-
-                    b.Navigation("Exam");
-
-                    b.Navigation("Institute");
-
-                    b.Navigation("InstituteBranch");
-
-                    b.Navigation("Subject");
                 });
 
             modelBuilder.Entity("EducationManagement_DLL.Models.Exam_Models.ExamType", b =>

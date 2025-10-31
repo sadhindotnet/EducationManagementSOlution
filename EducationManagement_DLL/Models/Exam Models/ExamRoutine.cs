@@ -31,8 +31,8 @@ namespace EducationManagement_DLL.Models.Exam_Models
         public SubjectInfo  Subject { get; set; }
         [ValidateNever]
         public AcademyClass AcademyClass { get; set; }
-        [ValidateNever]
-        public Section Section { get; set; }
+        //[ValidateNever]
+        //public Section Section { get; set; }
         [ForeignKey("Institute")]
         public int InsId { get; set; }
         [ForeignKey("InstituteBranch")]
