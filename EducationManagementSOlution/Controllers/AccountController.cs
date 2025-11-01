@@ -21,22 +21,22 @@ namespace EducationManagementSOlution.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IUnitOfWork unitOfWork;
         private readonly ITokenService _tokenmanager;
-        
-       // private SchoolContext _context;
-       
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        // private SchoolContext _context;
+
         //private readonly IMailService _mailService;
 
         public AccountController(
                                 UserManager<ApplicationUser> userManager,
                                      
-                                         IUnitOfWork work ,
+                                         IUnitOfWork work, SignInManager<ApplicationUser> signInManager,
                                       ITokenService tokenmanager
                                       // SchoolContext _context
                                       //IMailService mailService
                                       )
         {
             this._userManager = userManager;
-            
+            _signInManager = signInManager;
             this.unitOfWork = work;
            
             _tokenmanager = tokenmanager;
@@ -137,6 +137,12 @@ namespace EducationManagementSOlution.Controllers
             }
             }
             return Unauthorized(new { msg = "Invalid user name or password" });
+        }
+        [HttpPost("Logout")]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return Ok(new { message = "User logged out successfully." });
         }
 
     }
