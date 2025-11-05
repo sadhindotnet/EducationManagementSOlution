@@ -112,6 +112,7 @@ namespace EducationManagement_DLL.Context
         public DbSet<MarksEntry> MarksEntries { get; set; } = null!;
         public DbSet<Grade> Grades { get; set; } = null!;
        public DbSet<Result> Results { get; set; } = null!;
+        public DbSet<ExamwithSubject> ExamwithSubject { get; set; } = null!;
         public DbSet<ExamAttendance> ExamAttendances { get; set; } = null!;
 
         public DbSet<ExamRoutine> ExamRoutines { get; set; } = null!;
