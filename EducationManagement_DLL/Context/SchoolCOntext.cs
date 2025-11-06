@@ -77,6 +77,7 @@ namespace EducationManagement_DLL.Context
         public DbSet<EmployeesEducation> EmployeesEducations { get; set; } = null!;
         public  DbSet<EmployeeSalary> EmployeeSalaries { get; set; } = null!;
         public DbSet<EmployeeQualification> EmployeeQualification { get; set; } = null!;
+        public DbSet<EmployeesJobHistroy> EmployeesJobHistroy { get; set; } = null!;
         #endregion 
         #region Accounts Settings
         public DbSet<ShareHolderInformation> ShareHolderInformations { get; set; } = null!;

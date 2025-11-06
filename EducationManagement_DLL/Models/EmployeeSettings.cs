@@ -93,10 +93,12 @@ namespace EducationManagement_DLL.Models
     }
     public class Teacher :BaseDTO
     {
+        public string Name { get; set; }
         [ForeignKey("Employee")]
         public int EmpId { get; set; }
-        
-      public Employee Employee { get; set; }
+
+        [ValidateNever]
+        public Employee Employee { get; set; }
         //[ForeignKey("Institute")]
         //public int InsId { get; set; }
         //[ForeignKey("InstituteBranch")]
@@ -174,6 +176,8 @@ namespace EducationManagement_DLL.Models
         public Institute? Institute { get; set; }
         [ValidateNever]
         public InsBranch? InstituteBranch { get; set; }
+        [ValidateNever]
+        public Employee employee { get; set; }
     }
     public class EmployeeQualification:BaseDTO
     {
@@ -192,8 +196,9 @@ namespace EducationManagement_DLL.Models
         public int NationalCertificateID { get; set; }
         [DataType(DataType.Date)]
         public DateTime AchievedDate { get; set; }
-
+        [ValidateNever]
         public virtual Employee? Employee { get; set; }
+        [ValidateNever]
         public virtual NationalCertificate NationalCertificate { get; set; }
         //[ForeignKey("Module")]
         //public int ModuleId { get; set; }
@@ -209,12 +214,12 @@ namespace EducationManagement_DLL.Models
         public DateTime StartPeriod { get; set; }
         [DataType(DataType.Date)]
         public DateTime EndPeriod { get; set; }
-        public int EmployeeGradeID { get; set; }
+        //public int EmployeeGradeID { get; set; }
+        [ValidateNever]
         public virtual Employee? Employee { get; set; }
-        public virtual NationalCertificate NationalCertificate { get; set; }
-        //[ForeignKey("Module")]
-        //public int ModuleId { get; set; }
-        //public virtual Module Module { get; set; }
+        //[ValidateNever]
+        //public virtual NationalCertificate NationalCertificate { get; set; }
+       
     }
     public class NationalCertificate : BaseDTO
     {

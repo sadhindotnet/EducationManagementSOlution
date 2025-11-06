@@ -1,53 +1,49 @@
 ﻿using EducationManagement_DLL.Infrastructures.Base;
 using EducationManagement_DLL.Models;
-using EducationManagement_DLL.Models.WebsiteModels;
 using EducationManagement_DLL.Utility;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EducationManagementSOlution.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class EmployeesJobHistroyController : ControllerBase
+    public class TeacherController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
         private ModelMessage message;
-        public EmployeesJobHistroyController(IUnitOfWork unitOfWork)
+        public TeacherController(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
             message = new ModelMessage();
         }
         [HttpGet]
-        public async Task<IEnumerable<EmployeesJobHistroy>> Get()
+        public async Task<IEnumerable<Teacher>> Get()
         {
             try
             {
-                return await _unitOfWork.EmployeesJobHistroyRepo.GetAll();
+                return await _unitOfWork.TeacherRepo.GetAll();
             }
             catch (Exception ex)
             {
-                return Enumerable.Empty<EmployeesJobHistroy>();
+                return Enumerable.Empty<Teacher>();
             }
         }
         [HttpGet("{id:int}")]
-        public async Task<EmployeesJobHistroy> Get(int id)
+        public async Task<Teacher> Get(int id)
         {
             try
             {
-                return await _unitOfWork.EmployeesJobHistroyRepo.GetById(id);
+                return await _unitOfWork.TeacherRepo.GetById(id);
             }
             catch (Exception ex)
             {
-                return new EmployeesJobHistroy();
+                return new Teacher();
             }
         }
         [HttpPost]
-        public async Task<ModelMessage> Post(EmployeesJobHistroy entity)
+        public async Task<ModelMessage> Post(Teacher entity)
         {
             try
             {
-                await _unitOfWork.EmployeesJobHistroyRepo.Add(entity);
+                await _unitOfWork.TeacherRepo.Add(entity);
                 message = _unitOfWork.Save();
 
             }
@@ -59,11 +55,11 @@ namespace EducationManagementSOlution.Controllers
             return message;
         }
         [HttpPut]
-        public async Task<ModelMessage> Put(EmployeesJobHistroy entity)
+        public async Task<ModelMessage> Put(Teacher entity)
         {
             try
             {
-                _unitOfWork.EmployeesJobHistroyRepo.Update(entity);
+                _unitOfWork.TeacherRepo.Update(entity);
                 message = _unitOfWork.Save();
 
             }
@@ -79,7 +75,7 @@ namespace EducationManagementSOlution.Controllers
         {
             try
             {
-                await _unitOfWork.EmployeesJobHistroyRepo.DeletebyID(id);
+                await _unitOfWork.MissionVissionRepo.DeletebyID(id);
                 message = _unitOfWork.Save();
 
             }
