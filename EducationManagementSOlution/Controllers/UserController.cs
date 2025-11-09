@@ -32,6 +32,32 @@ namespace EducationManagementSOlution.Controllers
                 return Enumerable.Empty<ApplicationUser>();
             }
         }
+        [HttpGet("UserswithRole")]
+        public async Task<IEnumerable<RegisterDTO>> GetUserswithRole()
+        {
+            try
+            {
+                //return await _unitOfWork.UserRepo.GetAll();
+                return await _unitOfWork.UserRepo.GetAllUsersWithRolesAsync();
+            }
+            catch (Exception ex)
+            {
+                return Enumerable.Empty<RegisterDTO>();
+            }
+        }
+        [HttpGet("UsersInRole")]
+        public async Task<IEnumerable<ApplicationUser>> GetUsersbyRole(string roleName)
+        {
+            try
+            {
+                //return await _unitOfWork.UserRepo.GetAll();
+                return await _unitOfWork.UserRepo.GetUsersInRoleAsync(roleName);
+            }
+            catch (Exception ex)
+            {
+                return Enumerable.Empty<ApplicationUser>();
+            }
+        }
         //[HttpGet("{id:int}")]
         //public async Task<Role> Get(int id)
         //{

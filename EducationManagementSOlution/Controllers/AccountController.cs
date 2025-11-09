@@ -119,7 +119,7 @@ namespace EducationManagementSOlution.Controllers
                         Token = accessToken,
                         RefreshToken = refreshToken,
                         Role = result.Role,
-                        UserId = result.UserId,
+                        UserName = result.UserName,
                         InstituteBranchName = result.InstituteBranchName,
                         InstituteBranchId = result.InstituteBranchId,
                         InstituteId = result.InstituteId,

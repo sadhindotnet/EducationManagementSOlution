@@ -44,6 +44,20 @@ namespace EducationManagementSOlution.Controllers
                 return new StudentBasicInfo();
             }
         }
+        [HttpGet("GetProfile")]
+        public async Task<StudentBasicInfo> GetProfile(string userName)
+        {
+            try
+            {
+                return await _unitOfWork.StudentBasicInfoRepo.GetT(s=>s.StudentID.Equals(userName));
+            }
+            catch (Exception ex)
+            {
+               // return new StudentBasicInfo();
+                throw new ApplicationException($"Error fetching profile: {ex.InnerException.Message?? ex.Message}", ex);
+
+            }
+        }
         [HttpPost]
         public async Task<ModelMessage> Post ([FromBody] StudentBasicInfo entity)
         {

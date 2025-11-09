@@ -78,15 +78,17 @@ namespace EducationManagement_DLL.Infrastructures.Base
             return await _dbset.FindAsync(id);
         }
 
-        public T GetT(Expression<Func<T, bool>> predicate)
+        public async Task<T> GetT(Expression<Func<T, bool>> predicate)
         {
             try
             {
-                return _dbset.Where(predicate).FirstOrDefault();
+                return await _dbset.Where(predicate).FirstOrDefaultAsync();
             }
             catch (Exception ex)
             {
-                return null;
+                //return null;
+                throw new Exception($"Error fetching data: {ex.Message}", ex);
+
             }
         }
 

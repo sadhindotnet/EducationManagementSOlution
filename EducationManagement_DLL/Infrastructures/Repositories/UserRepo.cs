@@ -26,6 +26,8 @@ namespace EducationManagement_DLL.Infrastructures.Repositories
       Task<ModelMessage> CreateUser(  RegisterDTO model);
         Task<IEnumerable<ApplicationUser>> GetUsers();
         public  Task<Object> Login(LoginDTO login);
+        Task<List<RegisterDTO>> GetAllUsersWithRolesAsync();
+        Task<List<ApplicationUser>> GetUsersInRoleAsync(string roleName);
     }
     public  class UserRepo : IUserRepo
     {
@@ -51,6 +53,9 @@ namespace EducationManagement_DLL.Infrastructures.Repositories
             )   { 
             this._context = context;
             modelMessage = new ModelMessage();
+       ////     _userManager = _serviceProvider?.GetRequiredService<UserManager<ApplicationUser>>()
+       ////?? throw new InvalidOperationException("UserManager could not be resolved.");
+
 
             _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
             // this._userManager = userManager;
@@ -64,6 +69,9 @@ namespace EducationManagement_DLL.Infrastructures.Repositories
        public async Task<IEnumerable<ApplicationUser>> GetUsers(){
             _userManager = _serviceProvider?.GetRequiredService<UserManager<ApplicationUser>>()
        ?? throw new InvalidOperationException("UserManager could not be resolved.");
+
+
+
             return _userManager.Users.AsEnumerable();
         }
         //Register user 
@@ -92,7 +100,12 @@ namespace EducationManagement_DLL.Infrastructures.Repositories
                         BranchID = model.InstituteBranchId,
                         PhoneNumber=model.PhoneNumber
                     };
-                            var result = await _userManager.CreateAsync(user, model.Password);
+                //if(String.IsNullOrEmpty(model.Password))
+                //{
+                //    model.Password = model.Name.ToUpper().Substring(0, 3) + "p*566#";
+                //}
+ 
+                            var result = await _userManager.CreateAsync(user,model.Password);
 
                             if (result.Succeeded)
                             {
@@ -139,6 +152,39 @@ namespace EducationManagement_DLL.Infrastructures.Repositories
                 return modelMessage;
             //}
         }
+        public async Task<List<ApplicationUser>> GetUsersInRoleAsync(string roleName)
+        {
+            if (!await _roleManager.RoleExistsAsync(roleName))
+            {
+                throw new ArgumentException($"Role '{roleName}' does not exist.");
+            }
+
+            var usersInRole = await _userManager.GetUsersInRoleAsync(roleName);
+            return usersInRole.ToList();
+        }
+        public async Task<List<RegisterDTO>> GetAllUsersWithRolesAsync()
+        {
+            _userManager = _serviceProvider?.GetRequiredService<UserManager<ApplicationUser>>()
+                          ?? throw new InvalidOperationException("UserManager could not be resolved.");
+            var users = _userManager.Users.ToList();
+            var userRolesList = new List<RegisterDTO>();
+            foreach (var user in users)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                userRolesList.Add(new RegisterDTO
+                {
+                    UserID = user.Id,
+                    UserName = user.UserName,
+                    Name= user.FirstName,
+                    Email = user.Email,
+                    RolesName = string.Join(",", roles.ToList())
+                });
+            }
+
+            return userRolesList;
+        }
+
+
 
         public async Task<Object> Login( LoginDTO login)
         {
