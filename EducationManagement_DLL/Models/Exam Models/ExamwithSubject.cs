@@ -19,9 +19,11 @@ namespace EducationManagement_DLL.Models.Exam_Models
         public int FullMarks { get; set; }
         public int PassingMarks { get; set; }
         public int DurationInMinutes { get; set; }
-
+        [ValidateNever]
         public ExamTitle ExamTitle { get; set; }
+        [ValidateNever]
         public ExamType ExamType { get; set; }
+        [ValidateNever]
         public SubjectInfo SubjectInfo { get; set; }
         [ForeignKey("Institute")]
         public int InsId { get; set; }

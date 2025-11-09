@@ -112,9 +112,9 @@ namespace EducationManagement_DLL.Models
         [ForeignKey("InstituteBranch")]
         public int BranchID { get; set; } = 1;
         //public string Session { get; set; }
-        [ForeignKey("SchoolSessions")]
+        [ForeignKey("AcademicSession")]
         public int SessionId { get; set; }
-        [ForeignKey("SchoolWiseClasses")]
+        [ForeignKey("AcademyClass")]
         public int ClassID { get; set; }
         [ForeignKey("SchoolShifts")]
         public int ShiftID { get; set; }
@@ -127,6 +127,9 @@ namespace EducationManagement_DLL.Models
        // public int Status { get; set; } = 1;
         public float Result { get; set; }//grade
         public Medium Medium { get; set; }
+        [ValidateNever]
+        public AcademicSession academicSession { get; set; }
+        
         [ValidateNever]
         public StudentBasicInfo StudentBasicInfos { get; set; }
         

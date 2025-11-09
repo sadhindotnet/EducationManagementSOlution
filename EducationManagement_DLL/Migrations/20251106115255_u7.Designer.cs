@@ -4,6 +4,7 @@ using EducationManagement_DLL.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EducationManagement_DLL.Migrations
 {
     [DbContext(typeof(SchoolContext))]
-    partial class SchoolCOntextModelSnapshot : ModelSnapshot
+    [Migration("20251106115255_u7")]
+    partial class u7
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1391,6 +1394,9 @@ namespace EducationManagement_DLL.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
+                    b.Property<int>("NationalCertificateId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("StartPeriod")
                         .HasColumnType("datetime2");
 
@@ -1403,6 +1409,8 @@ namespace EducationManagement_DLL.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("EmployeeID");
+
+                    b.HasIndex("NationalCertificateId");
 
                     b.ToTable("EmployeesJobHistroy");
                 });
@@ -4746,7 +4754,15 @@ namespace EducationManagement_DLL.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("EducationManagement_DLL.Models.NationalCertificate", "NationalCertificate")
+                        .WithMany()
+                        .HasForeignKey("NationalCertificateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Employee");
+
+                    b.Navigation("NationalCertificate");
                 });
 
             modelBuilder.Entity("EducationManagement_DLL.Models.Exam_Models.ExamRoutine", b =>

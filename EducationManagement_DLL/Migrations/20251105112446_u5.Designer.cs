@@ -4,6 +4,7 @@ using EducationManagement_DLL.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EducationManagement_DLL.Migrations
 {
     [DbContext(typeof(SchoolContext))]
-    partial class SchoolCOntextModelSnapshot : ModelSnapshot
+    [Migration("20251105112446_u5")]
+    partial class u5
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1362,51 +1365,6 @@ namespace EducationManagement_DLL.Migrations
                     b.ToTable("EmployeesGroups");
                 });
 
-            modelBuilder.Entity("EducationManagement_DLL.Models.EmployeesJobHistroy", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DomainName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("EmployeeID")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("EndPeriod")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("IP")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("StartPeriod")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EmployeeID");
-
-                    b.ToTable("EmployeesJobHistroy");
-                });
-
             modelBuilder.Entity("EducationManagement_DLL.Models.Exam_Models.ExamAttendance", b =>
                 {
                     b.Property<int>("Id")
@@ -1805,10 +1763,6 @@ namespace EducationManagement_DLL.Migrations
                     b.HasIndex("InsBranchId");
 
                     b.HasIndex("InsId");
-
-                    b.HasIndex("SectionID");
-
-                    b.HasIndex("SessionID");
 
                     b.HasIndex("StudentID");
 
@@ -2561,8 +2515,6 @@ namespace EducationManagement_DLL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EmployeeID");
-
                     b.HasIndex("InsBranchId");
 
                     b.HasIndex("InsId");
@@ -2776,6 +2728,9 @@ namespace EducationManagement_DLL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("AcademicSessionId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("AdmissionDate")
                         .HasColumnType("datetime2");
 
@@ -2840,10 +2795,9 @@ namespace EducationManagement_DLL.Migrations
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("academicSessionId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("AcademicSessionId");
 
                     b.HasIndex("BranchID");
 
@@ -2853,13 +2807,9 @@ namespace EducationManagement_DLL.Migrations
 
                     b.HasIndex("InstituteID");
 
-                    b.HasIndex("SessionId");
-
                     b.HasIndex("ShiftID");
 
                     b.HasIndex("StdID");
-
-                    b.HasIndex("academicSessionId");
 
                     b.ToTable("StdtAcademicInfos");
                 });
@@ -3090,10 +3040,6 @@ namespace EducationManagement_DLL.Migrations
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("nvarchar(max)");
@@ -4738,17 +4684,6 @@ namespace EducationManagement_DLL.Migrations
                     b.Navigation("NationalCertificate");
                 });
 
-            modelBuilder.Entity("EducationManagement_DLL.Models.EmployeesJobHistroy", b =>
-                {
-                    b.HasOne("EducationManagement_DLL.Models.Employee", "Employee")
-                        .WithMany()
-                        .HasForeignKey("EmployeeID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Employee");
-                });
-
             modelBuilder.Entity("EducationManagement_DLL.Models.Exam_Models.ExamRoutine", b =>
                 {
                     b.HasOne("EducationManagement_DLL.Models.AcademyClass", "AcademyClass")
@@ -4886,18 +4821,6 @@ namespace EducationManagement_DLL.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("EducationManagement_DLL.Models.ClassSection", "Section")
-                        .WithMany()
-                        .HasForeignKey("SectionID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("EducationManagement_DLL.Models.AcademicSession", "Session")
-                        .WithMany()
-                        .HasForeignKey("SessionID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("EducationManagement_DLL.Models.StudentBasicInfo", "StudentBasicInfo")
                         .WithMany()
                         .HasForeignKey("StudentID")
@@ -4919,10 +4842,6 @@ namespace EducationManagement_DLL.Migrations
                     b.Navigation("Institute");
 
                     b.Navigation("InstituteBranch");
-
-                    b.Navigation("Section");
-
-                    b.Navigation("Session");
 
                     b.Navigation("StudentBasicInfo");
 
@@ -5128,12 +5047,6 @@ namespace EducationManagement_DLL.Migrations
 
             modelBuilder.Entity("EducationManagement_DLL.Models.Staff", b =>
                 {
-                    b.HasOne("EducationManagement_DLL.Models.Employee", "employee")
-                        .WithMany()
-                        .HasForeignKey("EmployeeID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("EducationManagement_DLL.Models.InsBranch", "InstituteBranch")
                         .WithMany()
                         .HasForeignKey("InsBranchId")
@@ -5149,8 +5062,6 @@ namespace EducationManagement_DLL.Migrations
                     b.Navigation("Institute");
 
                     b.Navigation("InstituteBranch");
-
-                    b.Navigation("employee");
                 });
 
             modelBuilder.Entity("EducationManagement_DLL.Models.StdInvoice", b =>
@@ -5230,6 +5141,10 @@ namespace EducationManagement_DLL.Migrations
 
             modelBuilder.Entity("EducationManagement_DLL.Models.StdtAcademicInfo", b =>
                 {
+                    b.HasOne("EducationManagement_DLL.Models.AcademicSession", "AcademicSession")
+                        .WithMany()
+                        .HasForeignKey("AcademicSessionId");
+
                     b.HasOne("EducationManagement_DLL.Models.InsBranch", "InstituteBranch")
                         .WithMany()
                         .HasForeignKey("BranchID")
@@ -5252,12 +5167,6 @@ namespace EducationManagement_DLL.Migrations
                         .WithMany()
                         .HasForeignKey("InstituteID");
 
-                    b.HasOne("EducationManagement_DLL.Models.AcademicSession", "AcademicSession")
-                        .WithMany()
-                        .HasForeignKey("SessionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("EducationManagement_DLL.Models.Shift", "Shifts")
                         .WithMany()
                         .HasForeignKey("ShiftID")
@@ -5267,12 +5176,6 @@ namespace EducationManagement_DLL.Migrations
                     b.HasOne("EducationManagement_DLL.Models.StudentBasicInfo", "StudentBasicInfos")
                         .WithMany()
                         .HasForeignKey("StdID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("EducationManagement_DLL.Models.AcademicSession", "academicSession")
-                        .WithMany()
-                        .HasForeignKey("academicSessionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -5289,8 +5192,6 @@ namespace EducationManagement_DLL.Migrations
                     b.Navigation("Shifts");
 
                     b.Navigation("StudentBasicInfos");
-
-                    b.Navigation("academicSession");
                 });
 
             modelBuilder.Entity("EducationManagement_DLL.Models.StudentBasicInfo", b =>

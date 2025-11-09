@@ -23,10 +23,19 @@ namespace EducationManagement_DLL.Models.Exam_Models
         [ForeignKey("ExamType")]
         public int ExamTypeID { get; set; }
         public decimal? ObtainMark { get; set; }
+        [ValidateNever]
+        public ClassSection Section { get; set; }
+        [ValidateNever]
+        public AcademicSession Session { get; set; }
+        [ValidateNever]
         public AcademyClass AcademyClass { get; set; }
+        [ValidateNever]
         public StudentBasicInfo StudentBasicInfo { get; set; }
+        [ValidateNever]
         public ExamTitle ExamTitle { get; set; }
+        [ValidateNever]
         public SubjectInfo SubjectInfo { get; set; }
+        [ValidateNever]
         public ExamType ExamType { get; set; }
         [ForeignKey("Institute")]
         public int InsId { get; set; }

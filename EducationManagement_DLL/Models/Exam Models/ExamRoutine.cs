@@ -17,7 +17,7 @@ namespace EducationManagement_DLL.Models.Exam_Models
         public int SessionID { get; set; }
         public int SubjectId { get; set; }
         public int AcademyClassId { get; set; }
-       // public int SectionId { get; set; }
+       
         public DateTime ExamDate { get; set; }
         public TimeSpan StartTime { get; set; }
         public TimeSpan EndTime { get; set; }
@@ -28,11 +28,11 @@ namespace EducationManagement_DLL.Models.Exam_Models
         [ValidateNever]
         public ExamTitle Exam { get; set; }
         [ValidateNever]
-        public SubjectInfo  Subject { get; set; }
+        public SubjectInfo Subject { get; set; }
+        
         [ValidateNever]
         public AcademyClass AcademyClass { get; set; }
-        //[ValidateNever]
-        //public Section Section { get; set; }
+       
         [ForeignKey("Institute")]
         public int InsId { get; set; }
         [ForeignKey("InstituteBranch")]
