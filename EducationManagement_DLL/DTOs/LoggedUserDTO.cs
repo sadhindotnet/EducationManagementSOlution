@@ -16,6 +16,7 @@ namespace EducationManagement_DLL.DTOs
         public int InstituteId { get; set; }
         public int InstituteBranchId { get; set; }
         public string InstituteName { get; set; }
+        public string InstituteShortName { get; set; }
         public string InstituteBranchName { get; set; }
         public string PictureUrl { get; set; }
 

@@ -123,6 +123,7 @@ namespace EducationManagementSOlution.Controllers
                         InstituteBranchName = result.InstituteBranchName,
                         InstituteBranchId = result.InstituteBranchId,
                         InstituteId = result.InstituteId,
+                        InstituteShortName=result.InstituteShortName,
                         InstituteName = result.InstituteName,
                     });
                 }

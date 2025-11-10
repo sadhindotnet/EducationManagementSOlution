@@ -34,6 +34,7 @@ namespace EducationManagement_DLL.Models
         [Required]
         [StringLength(120)]
         public string InstituteName { get; set; }
+      
         [Required]
         [StringLength(8)]
         public string ShortName { get; set; }

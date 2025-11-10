@@ -97,6 +97,8 @@ namespace EducationManagement_DLL.Models
         //public virtual Module Module { get; set; }
         [NotMapped]
         public string? InstituteName { get; set; }
+        [NotMapped]
+        public string? InstituteShortName { get; set; }
         [ValidateNever]
         public virtual Institute Institute { get; set; }
         [ValidateNever]

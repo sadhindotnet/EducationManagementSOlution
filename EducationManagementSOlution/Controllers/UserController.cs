@@ -5,6 +5,8 @@ using EducationManagement_DLL.Models.IdentityModels;
 using EducationManagement_DLL.Utility;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
 
 namespace EducationManagementSOlution.Controllers
 {
@@ -118,5 +120,76 @@ namespace EducationManagementSOlution.Controllers
         //    }
         //    return message;
         //}
+
+
+        [Route("Upload")]
+        [HttpPost, DisableRequestSizeLimit]
+        public async Task<IActionResult> UploadPic()
+        {
+            try
+            {
+                var file = Request.Form.Files[0];
+                //  var id = Request.Form["RestaurentId"];
+                var userName = Request.Form["username"];
+                var picpath = Request.Form["PicturePath"];
+                var folderName = Path.Combine("Resources", "MemberPic");
+                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+                if (file.Length > 0)
+                {
+                    //logo
+                    var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                    var ext = Path.GetExtension(fileName).ToLower();
+                    var fullPath = Path.Combine(pathToSave, userName + ext);
+                    var dbPath = Path.Combine(folderName, userName + ext);
+                    if (ext == ".jpg" || ext == ".png" || ext == ".jpeg")
+                    {
+                        var l = picpath.ToString().Trim().Length;
+                        if (picpath.ToString().Trim().Length > 0)
+                        {
+                            var existingfile = Path.Combine(Directory.GetCurrentDirectory(), picpath);
+
+                            string oext = Path.GetExtension(existingfile).ToLower();
+                            if (oext != ext)
+                            {
+                                //if(System.IO.File.Exists(picpath) )
+                                System.IO.File.Delete(picpath);
+
+                            }
+                        }
+                        using (var stream = new FileStream(fullPath, FileMode.Create))
+                        {
+                            file.CopyTo(stream);
+                        }
+                        var memtoupdate =await this._unitOfWork.UserRepo.GetUser(userName);
+                        memtoupdate.ProfilePicture = dbPath;
+                        memtoupdate.UserName = userName;
+                        //using(Transaction transaction =this.unitofWork.Db ) { }
+                      await  this._unitOfWork.UserRepo.UpdateUser(memtoupdate);
+                        var m = this._unitOfWork.Save();
+                        if (m.IsSuccess)
+                        {
+
+                            return Ok(new { Data = memtoupdate, result = m });
+                        }
+                        else
+                        {
+                            return Problem(m.Message);
+                        }
+                    }
+                    else
+                    {
+                        return BadRequest("Please provide valid Picture");
+                    }
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.InnerException?.Message ?? ex.Message}");
+            }
+        }
     }
 }

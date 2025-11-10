@@ -76,14 +76,15 @@ namespace EducationManagementSOlution.Controllers
                 if(message.IsSuccess)
                 {
                     var update= await _unitOfWork.StudentBasicInfoRepo.GetById(entity.Id);
-                    update.StudentID = entity.GenerateStdID(entity.Id, DateTime.Now.Year.ToString(), entity.InstituteName);
+                    update.StudentID = entity.GenerateStdID(entity.Id, DateTime.Now.Year.ToString(), entity.InstituteShortName);
                     _unitOfWork.StudentBasicInfoRepo.Update(update);
                     message = _unitOfWork.Save();
                         var register = new RegisterDTO
                         {
                             Email = entity.StudentEmail,
                             UserName = entity.StudentID,
-                            Password = entity.StudentName.Substring(0, 3) + "*566#",
+                            //Password = entity.StudentName.Substring(0, 3) + "*566#",
+                            Password = "@Test123",
                             RolesName = "Student",
                             Name = entity.StudentName,
                             InstituteBranchId = entity.BranchId.Value,

@@ -28,6 +28,8 @@ namespace EducationManagement_DLL.Infrastructures.Repositories
         public  Task<Object> Login(LoginDTO login);
         Task<List<RegisterDTO>> GetAllUsersWithRolesAsync();
         Task<List<ApplicationUser>> GetUsersInRoleAsync(string roleName);
+        public  Task<ApplicationUser> GetUser(string userName);
+        Task<ModelMessage> UpdateUser(ApplicationUser applicationUser);
     }
     public  class UserRepo : IUserRepo
     {
@@ -73,6 +75,54 @@ namespace EducationManagement_DLL.Infrastructures.Repositories
 
 
             return _userManager.Users.AsEnumerable();
+        }
+        public async Task<ApplicationUser>GetUser(string userName)
+        {
+            _userManager = _serviceProvider?.GetRequiredService<UserManager<ApplicationUser>>()
+       ?? throw new InvalidOperationException("UserManager could not be resolved.");
+
+
+            return await _userManager.FindByNameAsync(userName);
+        }
+        public async Task<ModelMessage> UpdateUser(ApplicationUser model)
+        {
+            //using (var transaction = _context.Database.BeginTransaction())
+            //{ 
+            try
+            {
+                _userManager = _serviceProvider?.GetRequiredService<UserManager<ApplicationUser>>()
+                     ?? throw new InvalidOperationException("UserManager could not be resolved.");
+
+                var result = await _userManager.UpdateAsync(model);
+
+                if (result.Succeeded)
+                {
+                  
+                    modelMessage.IsSuccess = true;
+                    modelMessage.Message = "User updated successfully!";
+
+                }
+                else
+                {
+                    if (result.Errors.Count() > 0)
+                    {
+                        foreach (var er in result.Errors)
+                        {
+
+                            modelMessage.Message = $"User creation failed for {er.Description}! ";
+                        }
+                    }
+                    // transaction.Rollback();
+                    //return HandleUserErrors(result);
+                }
+            }
+            catch (Exception ex)
+            {
+                // transaction.Rollback();
+                modelMessage.Message = ex.InnerException?.Message ?? ex.Message;
+            }
+            return modelMessage;
+            //}
         }
         //Register user 
         public async Task<ModelMessage>  CreateUser([FromBody] RegisterDTO model)
@@ -223,6 +273,7 @@ namespace EducationManagement_DLL.Infrastructures.Repositories
                                       InstituteId = u.InstituteID.Value,
                                       InstituteBranchId = u.BranchID,
                                       InstituteName = u.Institute.InstituteName,
+                                      InstituteShortName=u.Institute.ShortName,
                                       InstituteBranchName = u.InstituteBranch.BranchName,
                                       Role =string.Join(",", (from ur in _context.UserRoles
                                               join r in _context.Roles on ur.RoleId equals r.Id
