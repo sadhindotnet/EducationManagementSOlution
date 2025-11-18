@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using EducationManagement_DLL.Models.IdentityModels;
 using Microsoft.AspNetCore.Identity;
 using EducationManagementSOlution.Security;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,7 +25,15 @@ builder.Services.AddDbContext<SchoolContext>(op => {
     op.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 });
 
-
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Events.OnRedirectToLogin = context =>
+    {
+        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+        context.Response.Headers.Location = "/api/account/login";
+        return Task.CompletedTask;
+    };
+});
 builder.Services.AddScoped<IUnitOfWork, UnitOFWork>();
 
 
@@ -72,10 +81,15 @@ if (app.Environment.IsDevelopment())
 // Configure the HTTP request pipeline.
 
 app.UseHttpsRedirection();
-
+//app.UseStaticFiles();
 app.UseRouting();
 
 app.UseCors("AllowAll");
+app.UseStaticFiles(new StaticFileOptions()
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"Resources")),
+    RequestPath = new PathString("/Resources")
+});
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

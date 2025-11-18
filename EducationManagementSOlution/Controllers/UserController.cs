@@ -1,6 +1,7 @@
 ﻿using EducationManagement_DLL.Context;
 using EducationManagement_DLL.DTOs;
 using EducationManagement_DLL.Infrastructures.Base;
+using EducationManagement_DLL.Migrations;
 using EducationManagement_DLL.Models.IdentityModels;
 using EducationManagement_DLL.Utility;
 using Microsoft.AspNetCore.Http;
@@ -130,9 +131,9 @@ namespace EducationManagementSOlution.Controllers
             {
                 var file = Request.Form.Files[0];
                 //  var id = Request.Form["RestaurentId"];
-                var userName = Request.Form["username"];
+                string userName = Request.Form["username"];
                 var picpath = Request.Form["PicturePath"];
-                var folderName = Path.Combine("Resources", "MemberPic");
+                var folderName = Path.Combine("Resources", "UserPic");
                 var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
                 if (file.Length > 0)
                 {
@@ -164,11 +165,17 @@ namespace EducationManagementSOlution.Controllers
                         memtoupdate.ProfilePicture = dbPath;
                         memtoupdate.UserName = userName;
                         //using(Transaction transaction =this.unitofWork.Db ) { }
-                      await  this._unitOfWork.UserRepo.UpdateUser(memtoupdate);
-                        var m = this._unitOfWork.Save();
+                        var m = await  this._unitOfWork.UserRepo.UpdateUser(memtoupdate);
+
+                        //var stdToupdate = await this._unitOfWork.StudentBasicInfoRepo.GetAll(s => s.StudentID.Equals(userName.ToString(), null));
+
+                        var std = await this._unitOfWork.StudentBasicInfoRepo.GetAll(s => s.StudentID==userName.ToString().Trim(),null);
+                        var stdToupdate= std.FirstOrDefault();
+                        stdToupdate.StudentPicturePath = dbPath;
+                        this._unitOfWork.StudentBasicInfoRepo.Update(stdToupdate);
+                        m = this._unitOfWork.Save();
                         if (m.IsSuccess)
                         {
-
                             return Ok(new { Data = memtoupdate, result = m });
                         }
                         else

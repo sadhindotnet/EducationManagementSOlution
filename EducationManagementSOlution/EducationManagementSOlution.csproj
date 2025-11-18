@@ -19,4 +19,8 @@
     <ProjectReference Include="..\EducationManagement_DLL\EducationManagement_DLL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Resources\UserPic\" />
+  </ItemGroup>
+
 </Project>

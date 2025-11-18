@@ -22,6 +22,7 @@ namespace EducationManagement_DLL.Models
         //Auto generated
 
         public string? StudentID { get; set; }
+        public string? UserName { get; set; }
         //public int StdID { get; set; }
 
         [DisplayName("Student Name")]
@@ -83,7 +84,6 @@ namespace EducationManagement_DLL.Models
 
             return std;
         }
-
         
         [ValidateNever]
         public Religion Religion { get; set; }

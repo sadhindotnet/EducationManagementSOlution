@@ -1,6 +1,7 @@
 ﻿using EducationManagement_DLL.Context;
 using EducationManagement_DLL.Infrastructures.Base;
 using EducationManagement_DLL.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,7 @@ namespace EducationManagement_DLL.Infrastructures.Repositories
 {
     public interface IStudentBasicInfo : IGenericRepository<StudentBasicInfo> {
         public bool isExist(string name, string fatherContact);
+        public Task<string> GetImage(string uerName);
     }
 
 
@@ -24,6 +26,11 @@ namespace EducationManagement_DLL.Infrastructures.Repositories
         {
             return
                    _context.StudentBasicInfos.Any(s => s.StudentName.ToLower().Equals(name) && s.StudentFathersContract.Equals(fatherContact));
+        }
+        public async Task<string> GetImage(string uerName)
+        {
+            var std= await _context.StudentBasicInfos.FirstOrDefaultAsync(s => s.UserName == uerName);
+            return std.StudentPicturePath ?? "";
         }
     }
 }

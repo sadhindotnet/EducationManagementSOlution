@@ -155,7 +155,7 @@ namespace EducationManagement_DLL.Infrastructures.Repositories
                 //    model.Password = model.Name.ToUpper().Substring(0, 3) + "p*566#";
                 //}
  
-                            var result = await _userManager.CreateAsync(user,model.Password);
+                            var result = await _userManager.CreateAsync(user,model.Password??"@Test123");
 
                             if (result.Succeeded)
                             {

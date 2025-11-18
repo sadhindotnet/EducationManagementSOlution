@@ -3,6 +3,7 @@ using EducationManagement_DLL.Infrastructures.Base;
 using EducationManagement_DLL.Models;
 using EducationManagement_DLL.Models.WebsiteModels;
 using EducationManagement_DLL.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -49,7 +50,7 @@ namespace EducationManagementSOlution.Controllers
         {
             try
             {
-                return await _unitOfWork.StudentBasicInfoRepo.GetT(s=>s.StudentID.Equals(userName));
+                return await _unitOfWork.StudentBasicInfoRepo.GetT(s=>s.UserName.Equals(userName));
             }
             catch (Exception ex)
             {
@@ -58,7 +59,38 @@ namespace EducationManagementSOlution.Controllers
 
             }
         }
+        [HttpGet("GetStdImage")]
+        //public async Task<string> GetStdImage(string userName)
+        //{
+        //    try
+        //    {
+        //        var result= await _unitOfWork.StudentBasicInfoRepo.GetImage(userName);
+        //        return result;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // return new StudentBasicInfo();
+        //        throw new ApplicationException($"Error fetching profile: {ex.InnerException.Message ?? ex.Message}", ex);
+
+        //    }
+        //}
+
+
+        public async Task<IActionResult> GetStdImage(string userName)
+        {
+            try
+            {
+                var result = await _unitOfWork.StudentBasicInfoRepo.GetImage(userName);
+                return Ok(new { image = result }); 
+                // ✅ returns { "image": "..." }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = $"Error fetching profile: {ex.InnerException?.Message ?? ex.Message}" });
+            }
+        }
         [HttpPost]
+        [Authorize(Roles="Admin,Vendor")]
         public async Task<ModelMessage> Post ([FromBody] StudentBasicInfo entity)
         {
           using(var transaction= _unitOfWork.Context.Database.BeginTransaction())
@@ -77,8 +109,8 @@ namespace EducationManagementSOlution.Controllers
                 {
                     var update= await _unitOfWork.StudentBasicInfoRepo.GetById(entity.Id);
                     update.StudentID = entity.GenerateStdID(entity.Id, DateTime.Now.Year.ToString(), entity.InstituteShortName);
-                    _unitOfWork.StudentBasicInfoRepo.Update(update);
-                    message = _unitOfWork.Save();
+                        
+                       
                         var register = new RegisterDTO
                         {
                             Email = entity.StudentEmail,
@@ -93,11 +125,21 @@ namespace EducationManagementSOlution.Controllers
                         };
 
                  message= await   _unitOfWork.UserRepo.CreateUser(register);
-                  transaction.Commit();
-                        return message;
+                        update.UserName = register.UserName;
+                        _unitOfWork.StudentBasicInfoRepo.Update(update);
+                        message = _unitOfWork.Save();
+                        if (message.IsSuccess)
+                        {
+                            transaction.Commit();
+                            return message;
+                        }
+                        else
+                        {
+                            transaction.Rollback();
+                            return message;
+                        }
                     }
-                 transaction.Rollback();
-                    return message;
+               
                 }
             catch (Exception ex)
             {
