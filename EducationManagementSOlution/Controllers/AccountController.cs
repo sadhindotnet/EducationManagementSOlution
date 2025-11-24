@@ -102,22 +102,24 @@ namespace EducationManagementSOlution.Controllers
         [HttpPost]
         [Microsoft.AspNetCore.Mvc.Route("Login")]
         [AllowAnonymous]
-        public async Task<IActionResult> Login(LoginDTO loginVM)
+        public async Task<IActionResult> Login([FromBody]LoginDTO loginVM)
         {
             if (loginVM == null)
             {
                 return BadRequest(new { message = "Invalid login request" });
             }
 
-            using (var transaction = this.unitOfWork.Context.Database.BeginTransaction())
+            else
             {
-                try
+                using (var transaction = this.unitOfWork.Context.Database.BeginTransaction())
                 {
-                    var result = await this.unitOfWork.UserRepo.Login(loginVM) as LoggedUserDTO;
-                    if (result != null)
+                    try
                     {
-                        // Generate claims for the token
-                        var claims = new List<Claim>
+                        var result = await this.unitOfWork.UserRepo.Login(loginVM) as LoggedUserDTO;
+                        if (result != null)
+                        {
+                            // Generate claims for the token
+                            var claims = new List<Claim>
                         {
                             new Claim(ClaimTypes.Name, loginVM.UserName ?? ""),
                             new Claim(ClaimTypes.Role, result.Role?? ""),
@@ -129,61 +131,75 @@ namespace EducationManagementSOlution.Controllers
                            
                         };
 
-                        // Generate JWT access token and refresh token
-                        string accessToken = _tokenmanager.GenerateAccessToken(claims);
-                        var refreshToken = _tokenmanager.GenerateRefreshToken();
+                            // Generate JWT access token and refresh token
+                            string accessToken = _tokenmanager.GenerateAccessToken(claims);
+                            var refreshToken = _tokenmanager.GenerateRefreshToken();
 
-                        // Handle token and refresh token storage
-                        var loggedUser = (await unitOfWork.LoginModelRepo.GetAll(L => L.UserName == loginVM.UserName, "")).FirstOrDefault();
-                        //var loggedUser = users.FirstOrDefault();
+                            // Handle token and refresh token storage
+                            var loggedUser = (await unitOfWork.LoginModelRepo.GetAll(L => L.UserName == loginVM.UserName, "")).FirstOrDefault();
+                            //var loggedUser = users.FirstOrDefault();
 
-                        if (loggedUser != null)
-                        {
-                            loggedUser.RefreshToken = refreshToken;
-                            loggedUser.RefreshTokenExpiryTime = DateTime.Now.AddMinutes(10);
+                            if (loggedUser != null)
+                            {
+                                loggedUser.RefreshToken = refreshToken;
+                                loggedUser.RefreshTokenExpiryTime = DateTime.Now.AddMinutes(10);
 
-                            unitOfWork.LoginModelRepo.Update(loggedUser);
+                                unitOfWork.LoginModelRepo.Update(loggedUser);
+                            }
+                            else
+                            {
+                                var inuser = new LoginModel
+                                {
+                                    RefreshToken = refreshToken,
+                                    RefreshTokenExpiryTime = DateTime.Now.AddMinutes(10),
+                                    UserName = loginVM.UserName,
+                                    LoggedTime = DateTime.Now
+
+                                };
+                                unitOfWork.LoginModelRepo.Add(inuser);
+                            }
+                            unitOfWork.Save();
+                            // Return the authenticated response with tokens
+                            if (!string.IsNullOrEmpty(accessToken))
+                            {
+                                transaction.Commit();
+                                return Ok(new AuthenticatedResponse
+                                {
+                                    Token = accessToken,
+                                    RefreshToken = refreshToken,
+                                    Role = result.Role,
+                                    UserName = result.UserName,
+                                    InstituteBranchName = result.InstituteBranchName,
+                                    InstituteBranchId = result.InstituteBranchId,
+                                    InstituteId = result.InstituteId,
+                                    InstituteShortName = result.InstituteShortName,
+                                    InstituteName = result.InstituteName,
+                                });
+                            }
+                            else
+                            {
+                                transaction.Rollback();
+                                return Unauthorized(new { msg = "Token is empty" });
+                            }
                         }
+
                         else
                         {
-                            var inuser = new LoginModel
-                            {
-                                RefreshToken = refreshToken,
-                                RefreshTokenExpiryTime = DateTime.Now.AddMinutes(10),
-                                UserName = loginVM.UserName,
-                                LoggedTime = DateTime.Now
+                            return Unauthorized(new { msg = "Invalid user name or password" });
 
-                            };
-                            unitOfWork.LoginModelRepo.Add(inuser);
                         }
-                        unitOfWork.Save();
-                        // Return the authenticated response with tokens
-                        if (!string.IsNullOrEmpty(accessToken))
-                        {
-                            return Ok(new AuthenticatedResponse
-                            {
-                                Token = accessToken,
-                                RefreshToken = refreshToken,
-                                Role = result.Role,
-                                UserName = result.UserName,
-                                InstituteBranchName = result.InstituteBranchName,
-                                InstituteBranchId = result.InstituteBranchId,
-                                InstituteId = result.InstituteId,
-                                InstituteShortName = result.InstituteShortName,
-                                InstituteName = result.InstituteName,
-                            });
-                        }
+
                     }
-                    transaction.Commit();
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        return Unauthorized(new { msg = ex.Message });
+                    }
                 }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-                    return Unauthorized(new { msg = ex.Message });
-                }
+                return Unauthorized(new { msg = "Invalid user name or password" });
             }
-            return Unauthorized(new { msg = "Invalid user name or password" });
-        }
+
+         }
         [HttpPost("Logout")]
         public async Task<IActionResult> Logout()
         {
